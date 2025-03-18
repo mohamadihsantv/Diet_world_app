@@ -1,0 +1,43 @@
+## git working
+
+```
+git init
+```
+
+```
+git commit -m "first commit"
+```
+
+```
+git add .  
+```
+
+```
+git branch -M master  
+```
+
+```
+
+git remote add origin https://github.com/mohamadihsantv/Diet_world.git
+
+```
+
+```
+ git push -u origin master
+ ```
+
+
+ ```
+ python manage.py startapp (appname)
+ ```
+ ```
+ python manage.py makemigrations
+ ```
+ ```
+ python manage.py migrate
+ ```
+ ```
+ python manage.py runserver 
+ ```
+ 
+ 

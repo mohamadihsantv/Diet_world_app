@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script>
+        // JavaScript for Search, Cart, and Calorie Limit Functionality
+        let cart = [];
+        let maxCalories = 0; // Maximum calorie limit (set by the user)
+        let currentCalories = 0;
+
+        function setCalorieLimit() {
+            const limit = parseInt(document.getElementById('calorieLimitInput').value);
+            if (isNaN(limit) || limit <= 0) {
+                alert("Please enter a valid number for the calorie limit.");
+                return;
+            }
+            maxCalories = limit;
+            document.getElementById('calorieLimitSection').classList.add('hidden'); // Hide calorie limit section
+            document.getElementById('dashboardContent').classList.remove('hidden'); // Show dashboard content
+            updateBucket(); // Update the bucket display
+        }
+
+        function addToBucket(itemId, itemName, itemPrice, itemCalories, itemWeight) {
+            if (itemWeight <= 0) {
+                alert("Weight must be greater than 0 to add to the bucket.");
+                return;
+            }
+
+            const newCalories = (itemWeight / 10) * itemCalories;
+
+            if (currentCalories + newCalories > maxCalories) {
+                alert("Maximum calorie limit reached! Cannot add more items.");
+                return;
+            }
+
+            const existingItem = cart.find(item => item.id === itemId);
+            if (existingItem) {
+                existingItem.weight += itemWeight;
+                existingItem.totalPrice += (itemWeight / 10) * itemPrice;
+                existingItem.totalCalories += newCalories;
+            } else {
+                cart.push({
+                    id: itemId,
+                    name: itemName,
+                    weight: itemWeight,
+                    totalPrice: (itemWeight / 10) * itemPrice,
+                    totalCalories: newCalories
+                });
+            }
+
+            currentCalories += newCalories;
+            updateBucket();
+            alert(`Added ${itemName} to the bucket!`);
+            console.log(cart);
+        }
+
+        function increment(itemId, basePrice, baseCalories) {
+            const weightElement = document.getElementById(`weight-${itemId}`);
+            const priceElement = document.getElementById(`price-${itemId}`);
+            const caloriesElement = document.getElementById(`calories-${itemId}`);
+
+            let currentWeight = parseInt(weightElement.innerText);
+            let newWeight = currentWeight + 10;
+            let newPrice = (newWeight / 10) * basePrice;
+            let newCalories = (newWeight / 10) * baseCalories;
+
+            weightElement.innerText = newWeight;
+            priceElement.innerText = newPrice.toFixed(2);
+            caloriesElement.innerText = newCalories.toFixed(2);
+        }
+
+        function decrement(itemId, basePrice, baseCalories) {
+            const weightElement = document.getElementById(`weight-${itemId}`);
+            const priceElement = document.getElementById(`price-${itemId}`);
+            const caloriesElement = document.getElementById(`calories-${itemId}`);
+
+            let currentWeight = parseInt(weightElement.innerText);
+            if (currentWeight <= 0) {
+                alert("Weight cannot be less than 0.");
+                return;
+            }
+
+            let newWeight = currentWeight - 10;
+            let newPrice = (newWeight / 10) * basePrice;
+            let newCalories = (newWeight / 10) * baseCalories;
+
+            weightElement.innerText = newWeight;
+            priceElement.innerText = newPrice.toFixed(2);
+            caloriesElement.innerText = newCalories.toFixed(2);
+        }
+
+        function updateBucket() {
+            const bucketFill = document.getElementById('bucket-fill');
+            const fillPercentage = (currentCalories / maxCalories) * 100;
+            bucketFill.style.height = `${fillPercentage}%`;
+            bucketFill.innerText = `${currentCalories} / ${maxCalories} kcal`;
+
+            if (currentCalories >= maxCalories) {
+                alert("Maximum calorie limit reached! Cannot add more items.");
+            }
+        }
+
+        function addToCart() {
+            if (cart.length === 0) {
+                alert("Your bucket is empty! Add items to the bucket first.");
+                return;
+            }
+            alert("Items added to the cart successfully!");
+            console.log("Cart:", cart);
+            // Here you can add logic to send the cart data to the server or perform other actions
+        }
+
+        // Search Functionality
+        function searchProducts() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const productCards = document.querySelectorAll('.product-card');
+
+            productCards.forEach(card => {
+                const productName = card.querySelector('.product-name').innerText.toLowerCase();
+                if (productName.includes(query)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</head>
+<body class="bg-gray-100">
+    <!-- Navbar -->
+    <nav class="bg-gray-800 p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <a class="text-white text-xl font-bold" href="#">Customer Dashboard</a>
+            <form class="flex-grow mx-4">
+                <input class="w-96 px-4 py-2 rounded-l" id="searchInput" type="search" placeholder="Search Products" aria-label="Search" onkeyup="searchProducts()">
+                <button class="bg-blue-500 text-white px-4 py-2 rounded-r" type="button" onclick="searchProducts()">Search</button>
+            </form>
+            <a href="{% url 'logout' %}" class="bg-red-500 text-white px-4 py-2 rounded">Logout</a>
+        </div>
+    </nav>
+
+    <!-- Calorie Limit Input Section -->
+    <div id="calorieLimitSection" class="container mx-auto mt-5">
+        <div class="bg-white p-6 rounded-lg shadow text-center">
+            <h3 class="text-2xl font-bold mb-4">Set Your Daily Calorie Limit</h3>
+            <input type="number" id="calorieLimitInput" class="w-48 px-4 py-2 border rounded-lg mb-4" placeholder="Enter calorie limit">
+            <button onclick="setCalorieLimit()" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+                Set Limit
+            </button>
+        </div>
+    </div>
+
+    <!-- Dashboard Content (Hidden Initially) -->
+    <div id="dashboardContent" class="hidden">
+        <!-- Welcome Section -->
+        <div class="container mx-auto mt-5">
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h3 class="text-2xl font-bold">Welcome, {{ user.username }}!</h3>
+                <p class="text-gray-600">This is your customer dashboard.</p>
+                <p class="text-gray-600">Email: {{ user.email }}</p>
+                <p class="text-gray-600">Role: {{ user.role }}</p>
+            </div>
+        </div>
+
+        <!-- Bucket Section -->
+        <div class="fixed right-10 top-1/2 transform -translate-y-1/2">
+            <div class="bg-white p-4 rounded-lg shadow-lg text-center">
+                <h3 class="text-lg font-bold mb-2">Calorie Bucket</h3>
+                <div class="w-24 h-48 bg-gray-200 rounded-lg relative overflow-hidden">
+                    <div id="bucket-fill" class="w-full bg-blue-500 absolute bottom-0 transition-all duration-300 text-white flex items-center justify-center text-sm" style="height: 0%;">
+                        <span class="text-center">${currentCalories} / ${maxCalories} kcal</span>
+                    </div>
+                </div>
+                <button onclick="addToCart()" class="bg-green-500 text-white px-4 py-2 rounded-lg mt-4 hover:bg-green-600 transition">
+                    Add to Cart
+                </button>
+            </div>
+        </div>
+
+        <!-- Amazon-Style Product Cards with Searchable Functionality -->
+        <div class="container mx-auto mt-5">
+            <h2 class="text-center text-3xl text-blue-600 mb-6">Available Food Items</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                {% for item in food_items %}
+                <div class="product-card">
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="relative">
+                            <img src="{{ item.image.url }}" class="w-full h-48 object-contain p-4" alt="{{ item.name }}">
+                        </div>
+                        <div class="p-4">
+                            <h5 class="text-xl font-semibold product-name truncate">{{ item.name }}</h5>
+                            <p class="text-gray-500 text-sm">Calories per 10g: {{ item.calories_per_10g }} kcal</p>
+                            <div class="text-green-600 font-bold text-lg mb-2">₹<span id="price-{{ item.id }}">0.00</span></div>
+                            <p class="mb-2">
+                                Weight: <span id="weight-{{ item.id }}">0</span> g | 
+                                Calories: <span id="calories-{{ item.id }}">0</span> kcal
+                            </p>
+                            <div class="flex space-x-2">
+                                <button onclick="decrement({{ item.id }}, {{ item.price }}, {{ item.calories_per_10g }})" 
+                                        class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">
+                                    -10 Grams
+                                </button>
+                                <button onclick="increment({{ item.id }}, {{ item.price }}, {{ item.calories_per_10g }})" 
+                                        class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+                                    +10 Grams
+                                </button>
+                            </div>
+                            <button onclick="addToBucket({{ item.id }}, '{{ item.name }}', {{ item.price }}, {{ item.calories_per_10g }}, 
+                                    parseInt(document.getElementById('weight-{{ item.id }}').innerText))" 
+                                    class="bg-green-500 text-white px-4 py-2 rounded-lg mt-2 w-full hover:bg-green-600 transition">
+                                Add to Bucket
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

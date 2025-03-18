@@ -1,0 +1,66 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login or Register - Diet World</title>
+    <!-- Include Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom Styles -->
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 flex flex-col min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-md py-4">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            <!-- Logo -->
+            <div class="flex items-center">
+                <img src="{% static 'img/Diet_world.jpg' %}" alt="Logo" class="h-12 w-12 rounded-full mr-2">
+                <span class="text-xl font-bold text-gray-800">Diet World</span>
+            </div>
+            <!-- Navigation Links -->
+            <nav class="space-x-4">
+                <a href="#" class="text-gray-700 hover:text-red-600 transition duration-300">Home</a>
+                <a href="#" class="text-gray-700 hover:text-red-600 transition duration-300">About</a>
+                <a href="#" class="text-gray-700 hover:text-red-600 transition duration-300">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow flex items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-lg text-center max-w-md w-full mx-4">
+            <h1 class="text-3xl font-bold text-gray-800 mb-4">Welcome to Diet World</h1>
+            <p class="text-gray-600 mb-6">Please login or register to continue.</p>
+            <div class="space-y-4">
+                <!-- Login Button -->
+                <a href="{% url 'login' %}" class="inline-block w-full px-6 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition duration-300 transform hover:scale-105">
+                    Login
+                </a>
+                <!-- Register Button -->
+                <a href="{% url 'register_customer' %}" class="inline-block w-full px-6 py-3 bg-white text-red-600 font-semibold rounded-lg border border-red-600 hover:bg-red-50 transition duration-300 transform hover:scale-105">
+                    Register
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white py-4 mt-8">
+        <div class="container mx-auto px-6 text-center text-gray-600">
+            <p>&copy; 2025 Diet World. All rights reserved.</p>
+            <div class="mt-2 space-x-4">
+                <a href="#" class="hover:text-red-600 transition duration-300">Privacy Policy</a>
+                <a href="#" class="hover:text-red-600 transition duration-300">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        /* Custom CSS for the menu */
+        .menu {
+            width: 250px;
+            transition: width 0.3s;
+        }
+        .menu.minimized {
+            width: 50px;
+        }
+        .menu.minimized .menu-text {
+            display: none;
+        }
+        .menu.minimized .menu-icon {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex">
+    <!-- Menu Box -->
+    <div class="menu bg-gray-800 text-white h-screen fixed left-0 top-0 p-4">
+        <!-- Minimize/Expand Button -->
+        <button id="menuToggle" class="text-white mb-4">
+            <span class="menu-icon">&#9776;</span>
+            <span class="menu-text">Minimize</span>
+        </button>
+
+        <!-- Menu Options -->
+        <ul>
+            <li class="mb-2">
+                <a href="user-account.html" class="menu-item flex items-center p-2 hover:bg-gray-700 rounded">
+                    <span class="menu-icon">👤</span>
+                    <span class="menu-text ml-2">User Account</span>
+                </a>
+            </li>
+            <li class="mb-2">
+                <a href="diet-food.html" class="menu-item flex items-center p-2 hover:bg-gray-700 rounded">
+                    <span class="menu-icon">🥗</span>
+                    <span class="menu-text ml-2">Diet Food</span>
+                </a>
+            </li>
+            <li class="mb-2">
+                <a href="cart-food.html" class="menu-item flex items-center p-2 hover:bg-gray-700 rounded">
+                    <span class="menu-icon">🛒</span>
+                    <span class="menu-text ml-2">Cart Food</span>
+                </a>
+            </li>
+            <li class="mb-2">
+                <a href="ordered-food.html" class="menu-item flex items-center p-2 hover:bg-gray-700 rounded">
+                    <span class="menu-icon">📦</span>
+                    <span class="menu-text ml-2">Ordered Food</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content Area -->
+    <div id="mainContent" class="flex-1 ml-[250px] p-4">
+        <!-- Default content (Diet Food) -->
+        <iframe id="contentFrame" src="diet-food.html" class="w-full h-screen border-none"></iframe>
+    </div>
+
+    <script>
+        // Toggle menu minimize/expand
+        const menuToggle = document.getElementById('menuToggle');
+        const menu = document.querySelector('.menu');
+        const mainContent = document.getElementById('mainContent');
+
+        menuToggle.addEventListener('click', () => {
+            menu.classList.toggle('minimized');
+            if (menu.classList.contains('minimized')) {
+                mainContent.classList.remove('ml-[250px]');
+                mainContent.classList.add('ml-[50px]');
+            } else {
+                mainContent.classList.remove('ml-[50px]');
+                mainContent.classList.add('ml-[250px]');
+            }
+        });
+
+        // Load content dynamically when menu items are clicked
+        const menuItems = document.querySelectorAll('.menu-item');
+        const contentFrame = document.getElementById('contentFrame');
+
+        menuItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const href = item.getAttribute('href');
+                contentFrame.setAttribute('src', href);
+            });
+        });
+    </script>
+</body>
+</html>
