@@ -50,15 +50,10 @@ def home(request):
 
 
 from product.models import FoodItem  # Correct import for the FoodItem model
-@login_required
-def shop_owner_dashboard(request):
-    # Show only products owned by the logged-in shop owner
-    food_items = FoodItem.objects.filter(owner=request.user)
-    return render(request, 'shop_owner_dashboard.html', {'food_items': food_items})
 
 @login_required
 def shop_owner_dashboard(request):
-    # Retrieve all food items for shop owners
-    food_items = FoodItem.objects.all()
+    # ✅ Filter only products belonging to the logged-in user
+    food_items = FoodItem.objects.filter(owner=request.user).prefetch_related('species')
     return render(request, 'shop_owner_dashboard.html', {'food_items': food_items})
 

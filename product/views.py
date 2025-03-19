@@ -39,18 +39,23 @@ def list_food_items(request):
 
 @login_required
 def update_food_item(request, pk):
-    # ✅ Allow only if the logged-in user is the owner
     food_item = get_object_or_404(FoodItem, pk=pk, owner=request.user)
     
     if request.method == 'POST':
         form = FoodItemForm(request.POST, request.FILES, instance=food_item)
         if form.is_valid():
-            form.save()
+            food_item = form.save(commit=False)
+            food_item.save()
+            form.save_m2m()  # ✅ Save ManyToMany relationships
+            # ✅ Explicitly set the species after saving
+            food_item.species.set(form.cleaned_data['species'])  
             return redirect('shop_owner_dashboard')
     else:
         form = FoodItemForm(instance=food_item)
     
     return render(request, 'product/update_food_item.html', {'form': form})
+
+
 
 @login_required
 def delete_food_item(request, pk):

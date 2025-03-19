@@ -3,16 +3,17 @@
 {% block content %}
 <div class="container mt-5">
 
-        <!-- Welcome Section -->
-        <div class="container mx-auto mt-6">
-            <div class="bg-white shadow rounded-lg p-6">
-                <h3 class="text-2xl font-bold text-gray-700">Welcome, {{ user.username }}!</h3>
-                <p class="text-gray-600">This is your shop owner dashboard.</p>
-                <p class="text-gray-600">Email: {{ user.email }}</p>
-                <p class="text-gray-600">Role: {{ user.role }}</p>
-            </div>
+    <!-- Welcome Section -->
+    <div class="container mx-auto mt-6">
+        <div class="bg-white shadow rounded-lg p-6">
+            <h3 class="text-2xl font-bold text-gray-700">Welcome, {{ user.username }}!</h3>
+            <p class="text-gray-600">This is your shop owner dashboard.</p>
+            <p class="text-gray-600">Email: {{ user.email }}</p>
+            <p class="text-gray-600">Role: {{ user.role }}</p>
         </div>
-    <h2>Shop Owner Dashboard</h2>
+    </div>
+
+    <h2 class="my-4">Shop Owner Dashboard</h2>
     <a href="{% url 'add_food_item' %}" class="btn btn-primary mb-3">Add New Product</a>
     
     {% if food_items %}
@@ -23,6 +24,7 @@
                     <th>Price</th>
                     <th>Calories</th>
                     <th>Image</th>
+                    <th>Flavour</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -40,8 +42,20 @@
                         {% endif %}
                     </td>
                     <td>
+                        {% if item.species.exists %}
+                            {% for species in item.species.all %}
+                                <span class="badge bg-info me-1">{{ species.name }}</span>
+                            {% endfor %}
+                        {% else %}
+                            <span class="text-muted">No Flavour</span>
+                        {% endif %}
+                    </td>
+                    <td>
                         <a href="{% url 'update_food_item' item.pk %}" class="btn btn-sm btn-warning">Edit</a>
-                        <a href="{% url 'delete_food_item' item.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                        <form action="{% url 'delete_food_item' item.pk %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this item?')">Delete</button>
+                        </form>
                     </td>
                 </tr>
                 {% endfor %}
