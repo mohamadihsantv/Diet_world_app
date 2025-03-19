@@ -51,10 +51,10 @@ def home(request):
 
 from product.models import FoodItem  # Correct import for the FoodItem model
 @login_required
-def customer_dashboard(request):
-    # Retrieve all food items for customers
-    food_items = FoodItem.objects.all()
-    return render(request, 'customer_dashboard.html', {'food_items': food_items})
+def shop_owner_dashboard(request):
+    # Show only products owned by the logged-in shop owner
+    food_items = FoodItem.objects.filter(owner=request.user)
+    return render(request, 'shop_owner_dashboard.html', {'food_items': food_items})
 
 @login_required
 def shop_owner_dashboard(request):

@@ -1,65 +1,54 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shop Owner Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100">
-    <!-- Navbar -->
-    <nav class="bg-gray-800 text-white py-4">
-        <div class="container mx-auto flex justify-between items-center">
-            <a class="text-lg font-bold" href="#">Shop Owner Dashboard</a>
-            <div class="space-x-4">
-                <a href="{% url 'add_food_item' %}" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">Add Product</a>
-                <a href="{% url 'logout' %}" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">Logout</a>
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+
+        <!-- Welcome Section -->
+        <div class="container mx-auto mt-6">
+            <div class="bg-white shadow rounded-lg p-6">
+                <h3 class="text-2xl font-bold text-gray-700">Welcome, {{ user.username }}!</h3>
+                <p class="text-gray-600">This is your shop owner dashboard.</p>
+                <p class="text-gray-600">Email: {{ user.email }}</p>
+                <p class="text-gray-600">Role: {{ user.role }}</p>
             </div>
         </div>
-    </nav>
-
-    <!-- Welcome Section -->
-    <div class="container mx-auto mt-6">
-        <div class="bg-white shadow rounded-lg p-6">
-            <h3 class="text-2xl font-bold text-gray-700">Welcome, {{ user.username }}!</h3>
-            <p class="text-gray-600">This is your shop owner dashboard.</p>
-            <p class="text-gray-600">Email: {{ user.email }}</p>
-            <p class="text-gray-600">Role: {{ user.role }}</p>
-        </div>
-    </div>
-
-    <!-- Food Items Table -->
-    <div class="container mx-auto mt-10 bg-white p-6 rounded-lg shadow-lg">
-        <h2 class="text-2xl font-bold text-center text-red-600 mb-6">Manage Food Items</h2>
-        <div class="overflow-x-auto">
-            <table class="w-full text-left border border-gray-300">
-                <thead class="bg-red-600 text-white">
-                    <tr>
-                        <th class="p-4 border border-gray-300">Name</th>
-                        <th class="p-4 border border-gray-300">Image</th>
-                        <th class="p-4 border border-gray-300">Price</th>
-                        <th class="p-4 border border-gray-300">Calories per 10g</th>
-                        <th class="p-4 border border-gray-300">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in food_items %}
-                    <tr class="odd:bg-gray-50 even:bg-white hover:bg-red-50">
-                        <td class="p-4 border border-gray-300 text-gray-800 font-medium">{{ item.name }}</td>
-                        <td class="p-4 border border-gray-300">
-                            <img src="{{ item.image.url }}" alt="{{ item.name }}" class="w-20 h-20 object-cover rounded-lg mx-auto">
-                        </td>
-                        <td class="p-4 border border-gray-300 text-green-600 font-medium">₹{{ item.price }}</td>
-                        <td class="p-4 border border-gray-300 text-gray-700">{{ item.calories_per_10g }} kcal</td>
-                        <td class="p-4 border border-gray-300">
-                            <a href="{% url 'update_food_item' item.id %}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded text-sm">Edit</a>
-                            <a href="{% url 'delete_food_item' item.id %}" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded text-sm ml-2">Delete</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-</body>
-</html>
+    <h2>Shop Owner Dashboard</h2>
+    <a href="{% url 'add_food_item' %}" class="btn btn-primary mb-3">Add New Product</a>
+    
+    {% if food_items %}
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Calories</th>
+                    <th>Image</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in food_items %}
+                <tr>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.price }}</td>
+                    <td>{{ item.calories_per_10g }}</td>
+                    <td>
+                        {% if item.image %}
+                            <img src="{{ item.image.url }}" alt="{{ item.name }}" width="50">
+                        {% else %}
+                            No Image
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'update_food_item' item.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                        <a href="{% url 'delete_food_item' item.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No items available. Start by adding one!</p>
+    {% endif %}
+</div>
+{% endblock %}

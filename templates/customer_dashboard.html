@@ -11,6 +11,7 @@
         let maxCalories = 0; // Maximum calorie limit (set by the user)
         let currentCalories = 0;
 
+        // Function to set the calorie limit
         function setCalorieLimit() {
             const limit = parseInt(document.getElementById('calorieLimitInput').value);
             if (isNaN(limit) || limit <= 0) {
@@ -23,6 +24,18 @@
             updateBucket(); // Update the bucket display
         }
 
+        // Function to reset weight, price, and calorie values for an item
+        function resetItemValues(itemId) {
+            const weightElement = document.getElementById(`weight-${itemId}`);
+            const priceElement = document.getElementById(`price-${itemId}`);
+            const caloriesElement = document.getElementById(`calories-${itemId}`);
+
+            weightElement.innerText = 0;
+            priceElement.innerText = '0.00';
+            caloriesElement.innerText = '0.00';
+        }
+
+        // Function to add an item to the bucket
         function addToBucket(itemId, itemName, itemPrice, itemCalories, itemWeight) {
             if (itemWeight <= 0) {
                 alert("Weight must be greater than 0 to add to the bucket.");
@@ -55,8 +68,12 @@
             updateBucket();
             alert(`Added ${itemName} to the bucket!`);
             console.log(cart);
+
+            // Reset the values after adding to the bucket
+            resetItemValues(itemId);
         }
 
+        // Function to increment weight, price, and calories
         function increment(itemId, basePrice, baseCalories) {
             const weightElement = document.getElementById(`weight-${itemId}`);
             const priceElement = document.getElementById(`price-${itemId}`);
@@ -72,6 +89,7 @@
             caloriesElement.innerText = newCalories.toFixed(2);
         }
 
+        // Function to decrement weight, price, and calories
         function decrement(itemId, basePrice, baseCalories) {
             const weightElement = document.getElementById(`weight-${itemId}`);
             const priceElement = document.getElementById(`price-${itemId}`);
@@ -92,6 +110,7 @@
             caloriesElement.innerText = newCalories.toFixed(2);
         }
 
+        // Function to update the bucket display
         function updateBucket() {
             const bucketFill = document.getElementById('bucket-fill');
             const fillPercentage = (currentCalories / maxCalories) * 100;
@@ -103,6 +122,7 @@
             }
         }
 
+        // Function to add items to the cart
         function addToCart() {
             if (cart.length === 0) {
                 alert("Your bucket is empty! Add items to the bucket first.");

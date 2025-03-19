@@ -1,59 +1,50 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Food Item</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f8f8f8;
-            margin: 0;
-            padding: 0;
-        }
-        .form-container {
-            max-width: 500px;
-            margin: 50px auto;
-            background: #fff;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-        h2 {
-            text-align: center;
-            color: #E23744; /* Zomato's red tone */
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-        }
-        form input, form textarea, form select, form button {
-            margin: 10px 0;
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        form button {
-            background-color: #E23744;
-            color: #fff;
-            cursor: pointer;
-            border: none;
-        }
-        form button:hover {
-            background-color: #c32f3a;
-        }
-    </style>
-</head>
-<body>
-    <div class="form-container">
-        <h2>Add Food Item</h2>
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Add Item</button>
-            
-        </form>
-    </div>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Add New Food Item</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <div class="form-group">
+            {{ form.name.label_tag }}
+            {{ form.name }}
+        </div>
+        
+        <div class="form-group">
+            {{ form.image.label_tag }}
+            {{ form.image }}
+        </div>
+        
+        <div class="form-group">
+            {{ form.price.label_tag }}
+            {{ form.price }}
+        </div>
+        
+        <div class="form-group">
+            {{ form.calories_per_10g.label_tag }}
+            {{ form.calories_per_10g }}
+        </div>
+        
+        <div class="form-group">
+            {{ form.category.label_tag }}
+            {{ form.category }}
+        </div>
+        
+        <div class="form-group">
+            {{ form.species.label_tag }}
+            <div>
+                {% for checkbox in form.species %}
+                    <div class="form-check">
+                        {{ checkbox.tag }}
+                        <label class="form-check-label">{{ checkbox.choice_label }}</label>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+</div>
+{% endblock %}
