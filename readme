@@ -8,11 +8,9 @@ git init
 ```
 git add .  
 ```
-
 ```
-git commit -m "first commit"
+git commit -m "intial commit"
 ```
-
 ```
 git branch -M master  
 ```
@@ -42,3 +40,18 @@ git remote add origin https://github.com/mohamadihsantv/Diet_world.git
  ```
  
  
+
+ ## How update existing code into github
+
+```
+git add .  
+```
+ 
+ ```
+git commit -m "updated"
+```
+
+
+```
+ git push -u origin master
+ ```

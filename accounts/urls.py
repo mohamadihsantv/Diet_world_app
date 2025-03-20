@@ -5,7 +5,8 @@ from .views import (
     dashboard_redirect, 
     shop_owner_dashboard, 
     account_logout,
-    home
+    home,
+    update_profile
 )
 
 urlpatterns = [
@@ -15,4 +16,6 @@ urlpatterns = [
     path('shop-owner/', shop_owner_dashboard, name='shop_owner_dashboard'),
     path('logout/', account_logout, name='logout'),
     path('', home, name='home'),
+    path('profile/', update_profile, name='update_profile'),
+
 ]
